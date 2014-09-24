@@ -10,6 +10,9 @@ if __name__ == '__main__':
     mSel.add(meshA)
     mSel.add(meshB)
 
+    cmds.polyColorPerVertex(
+        meshA, colorRGB=[0.0, 0.0, 1.0], alpha=1.0, colorDisplayOption=True)
+
     #Set Mesh.
     source_mDagPath = OpenMaya.MDagPath()
     collider_mDagPath = OpenMaya.MDagPath()
@@ -47,7 +50,20 @@ if __name__ == '__main__':
     maxDeformation = 0.0
     dummyFloatArray = OpenMaya.MFloatArray()
     source_pntNormal = OpenMaya.MVector()
-    collision_Pnts = []
+
+
+    #Get Vertex color.
+    vertexColorList = OpenMaya.MColorArray()
+    source_MfnMesh.getVertexColors(vertexColorList)
+    collideColor = OpenMaya.MColor(1.0, 0.0, 0.0, 1.0)
+    lenVertexList = vertexColorList.length()
+
+    #Get Vert list.
+    fnComponent = OpenMaya.MFnSingleIndexedComponent()
+    fullComponent = fnComponent.create(OpenMaya.MFn.kMeshVertComponent)
+    fnComponent.setCompleteData(lenVertexList)
+    vertexIndexList = OpenMaya.MIntArray()
+    fnComponent.getElements(vertexIndexList)
 
     # direct collision deformation:
     for k in xrange(source_Pnts.length()):
@@ -116,6 +132,6 @@ if __name__ == '__main__':
                 collision = 1
 
             if collision == 1:
-                collision_Pnts.append(k)
+                vertexColorList.set(collideColor, k)
 
-    [cmds.select("%s.vtx[%s]" % (meshA, x), add=True) for x in collision_Pnts]
+    source_MfnMesh.setVertexColors(vertexColorList, vertexIndexList, None)
