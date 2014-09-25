@@ -51,7 +51,6 @@ if __name__ == '__main__':
     dummyFloatArray = OpenMaya.MFloatArray()
     source_pntNormal = OpenMaya.MVector()
 
-
     #Get Vertex color.
     vertexColorList = OpenMaya.MColorArray()
     source_MfnMesh.getVertexColors(vertexColorList)
@@ -128,7 +127,8 @@ if __name__ == '__main__':
             #Check collision on.
             if hitCount == 2 and signChange+1 == 1 and signChange != -1000:
                 collision = 1
-            elif hitCount > 2 and hitCount/(signChange+1) != 2 and signChange != -1000:
+            elif hitCount > 2 and \
+                    hitCount/(signChange+1) != 2 and signChange != -1000:
                 collision = 1
 
             if collision == 1:
